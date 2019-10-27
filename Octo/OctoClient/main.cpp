@@ -9,6 +9,9 @@
 
 // Std includes.
 #include <thread>
+#include <vector>
+
+#include "common.h"
 
 bool CreateDeviceD3D(HWND hWnd)
 {
@@ -148,6 +151,9 @@ int main(int argc, char* argv[])
 		// Loop variables.
 		MSG msg;
 		ZeroMemory(&msg, sizeof(msg));
+		std::string oldMessage = "";
+		std::vector <std::string> messages;
+		messages.push_back("Welcome to OctoClient v0.1!");
 
 		// The main render loop.
 		while (msg.message != WM_QUIT)
@@ -164,8 +170,27 @@ int main(int argc, char* argv[])
 			ImGui_ImplWin32_NewFrame();
 			ImGui::NewFrame();
 
+			if (oldMessage != messageReceived)
+			{
+				messages.push_back(messageReceived);
+				oldMessage = messageReceived;
+			}
+
 			ImGui::Begin("Hello, world!");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+			static int listbox_item_current = 1;
+			
+			std::vector <char const*> messagesForList(messages.size());
+
+			for (int i = 0; i < messages.size(); i++)
+			{
+				messagesForList[i] = messages[i].c_str();
+			}
+
+			ImGui::ListBox("listbox\n(single select)", &listbox_item_current, &messagesForList[0], messages.size(), 10);
+
+			ImGui::Text(messageReceived.c_str());
 			ImGui::End();
 
 			// Render the windows created.

@@ -6,15 +6,14 @@
 #include <boost/asio.hpp>
 #include "boost/bind.hpp"
 
+#include "common.h"
+
 const short multicast_port = 30001;
 
 class receiver
 {
 public:
-	receiver(boost::asio::io_service& io_service,
-		const boost::asio::ip::address& listen_address,
-		const boost::asio::ip::address& multicast_address)
-		: socket_(io_service)
+	receiver(boost::asio::io_service& io_service, const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address) : socket_(io_service)
 	{
 		// Create the socket so that multiple may be bound to the same address.
 		boost::asio::ip::udp::endpoint listen_endpoint(
@@ -39,8 +38,10 @@ public:
 	{
 		if (!error)
 		{
+			std::cout << "new transmission from houston: " << std::endl;
 			std::cout.write(data_, bytes_recvd);
 			std::cout << std::endl;
+			newMessageReceived(std::string(data_));
 
 			socket_.async_receive_from(
 				boost::asio::buffer(data_, max_length), sender_endpoint_,
