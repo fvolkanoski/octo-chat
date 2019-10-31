@@ -112,6 +112,7 @@ int main(int argc, char* argv[])
 
 		std::thread serverThread(runOctoServer, argv);
 
+
 		// Hide the console window, since we are gonna create a window for ImGUI.
 		//::ShowWindow(::GetConsoleWindow(), SW_HIDE);
 
